@@ -14,9 +14,8 @@ import colors from "../lib/configs/colors";
 import Size from "../lib/hooks/useResponsiveSize";
 import Circles from "../assets/svgs/circles";
 import MessageIcon from "../assets/svgs/messageIcon";
-import fonts from "../lib/configs/fonts";
-import truncateString from "../lib/snippets/truncate";
 import chats from "../lib/data/chats";
+import MessageList from "../components/messageList";
 
 const MessageScreen = () => {
   return (
@@ -35,36 +34,10 @@ const MessageScreen = () => {
         style={styles.messages}
         data={chats}
         keyExtractor={(item) => item.name}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.message}>
-            <Image
-              source={require("../assets/daniel.png")}
-              style={styles.chatImg}
-            />
-            <View style={styles.chatWrap}>
-              <View style={styles.chatFlex}>
-                <Text style={styles.userName}>{item.name}</Text>
-                <Text style={styles.time}>{item.time}</Text>
-              </View>
-              <View style={[styles.chatFlex, { marginTop: 3 }]}>
-                <Text style={styles.text}>
-                  {truncateString({
-                    str: item.message,
-                    maxLength: 25,
-                  })}
-                </Text>
-                {item.unreadCount > 0 && (
-                  <View style={styles.counts}>
-                    <Text style={styles.count}>{item.unreadCount}</Text>
-                  </View>
-                )}
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
+        renderItem={({ item }) => <MessageList {...item} />}
       />
       <Circles style={styles.circles} />
-      <StatusBar backgroundColor={colors.green300} />
+      <StatusBar backgroundColor={colors.green300} barStyle="light-content" />
     </SafeAreaView>
   );
 };
@@ -107,60 +80,6 @@ const styles = StyleSheet.create({
 
   messages: {
     paddingHorizontal: Size.calcWidth(20),
-  },
-
-  message: {
-    padding: Size.calcWidth(16),
-    backgroundColor: colors.black200,
-    borderRadius: 15,
-    marginTop: Size.calcHeight(20),
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-
-  chatImg: {
-    width: Size.calcAverage(50),
-    height: Size.calcAverage(50),
-  },
-
-  chatWrap: {
-    flex: 1,
-    marginLeft: Size.calcWidth(15),
-  },
-
-  chatFlex: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-
-  time: {
-    fontSize: Size.calcAverage(12),
-    color: colors.white,
-    fontFamily: fonts.font500,
-  },
-
-  text: {
-    fontSize: Size.calcAverage(14),
-    color: colors.white200,
-    fontFamily: fonts.font400,
-  },
-
-  counts: {
-    width: Size.calcAverage(24),
-    height: Size.calcAverage(24),
-    backgroundColor: colors.green300,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 24,
-  },
-
-  count: {
-    fontSize: Size.calcAverage(14),
-    color: colors.white,
-    fontFamily: fonts.font700,
   },
 
   circles: {

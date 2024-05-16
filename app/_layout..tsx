@@ -40,6 +40,13 @@ export default function Layout() {
           title: "Messages",
         }}
       />
+
+      <Stack.Screen
+        name={routes.CHAT_SCREEN}
+        options={{
+          title: "Messages",
+        }}
+      />
     </Stack>
   );
 }
