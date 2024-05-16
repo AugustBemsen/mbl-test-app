@@ -8,6 +8,7 @@ import {
 
 import { Stack } from "expo-router";
 import colors from "../lib/configs/colors";
+import routes from "../lib/configs/routes";
 
 export default function Layout() {
   let [fontsLoaded] = useFonts({
@@ -18,18 +19,27 @@ export default function Layout() {
 
   if (!fontsLoaded) {
     return null;
-  } else {
-    return (
-      <Stack
-        screenOptions={{
-          animation: "slide_from_right",
-          autoHideHomeIndicator: true,
-          headerShown: false,
-          contentStyle: {
-            backgroundColor: colors.green100,
-          },
+  }
+
+  //  TODO: handle auth and protect routes
+
+  return (
+    <Stack
+      screenOptions={{
+        animation: "slide_from_right",
+        autoHideHomeIndicator: true,
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: colors.black,
+        },
+      }}
+    >
+      <Stack.Screen
+        name={routes.MESSAGES_SCREEN}
+        options={{
+          title: "Messages",
         }}
       />
-    );
-  }
+    </Stack>
+  );
 }

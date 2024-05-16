@@ -11,6 +11,8 @@ import Arrows from "../assets/svgs/arrow";
 import Daniel from "../assets/svgs/daniel";
 import colors from "../lib/configs/colors";
 import BottomArrow from "../assets/svgs/bottomArrow";
+import Size from "../lib/hooks/useResponsiveSize";
+import routes from "../lib/configs/routes";
 
 const WelcomeScreen = () => {
   const router = useRouter();
@@ -22,12 +24,12 @@ const WelcomeScreen = () => {
       <Text style={styles.subtitle}>You have 3 unread messages out of 10</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.replace("Login")}
+        onPress={() => router.push(routes.MESSAGES_SCREEN)}
       >
         <Text style={styles.buttonText}>View Messages</Text>
       </TouchableOpacity>
       <BottomArrow style={styles.arrow2} />
-      <StatusBar />
+      <StatusBar barStyle="light-content" />
     </View>
   );
 };
@@ -54,15 +56,15 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 30,
-    marginTop: 20,
+    fontSize: Size.calcAverage(30),
+    marginTop: Size.calcHeight(20),
     color: colors.white,
     fontFamily: "Poppins_700Bold",
   },
 
   subtitle: {
-    fontSize: 16,
-    marginTop: 4,
+    fontSize: Size.calcAverage(16),
+    marginTop: Size.calcHeight(4),
     width: "70%",
     textAlign: "center",
     fontFamily: "Poppins_500Medium",
@@ -72,14 +74,14 @@ const styles = StyleSheet.create({
 
   button: {
     backgroundColor: colors.green100,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: Size.calcHeight(12),
+    paddingHorizontal: Size.calcWidth(24),
     borderRadius: 8,
-    marginTop: 30,
+    marginTop: Size.calcHeight(30),
   },
 
   buttonText: {
-    fontSize: 18,
+    fontSize: Size.calcAverage(18),
     color: colors.white,
     fontFamily: "Poppins_700Bold",
   },

@@ -1,6 +1,4 @@
 export default Object.freeze({
-  ONBOARDING_SCREEN: "onboardingScreen",
-
-  //   Auth
-  LOGIN_SCREEN: "LoginScreen",
+  MESSAGES_SCREEN: "MessageScreen",
+  CHAT_SCREEN: "ChatScreen",
 });
