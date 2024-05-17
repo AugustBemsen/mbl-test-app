@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -11,12 +11,13 @@ import {
   Keyboard,
   Image,
   Text,
+  ActivityIndicator,
 } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import Arrows from "../assets/svgs/arrow";
 import BottomArrow from "../assets/svgs/bottomArrow";
 import CenterArrow from "../assets/svgs/centerArrow";
@@ -25,43 +26,50 @@ import ChatBubble from "../components/chatBubble";
 import SendIcon from "../assets/svgs/sendIcon";
 import Size from "../lib/hooks/useResponsiveSize";
 import BackIcon from "../assets/svgs/backIcon";
+import AxiosInstance from "../lib/configs/axios";
+import { IMessage } from "../lib/configs/types";
 
 const ChatScreen = () => {
-  type chatType = {
-    id: number;
-    isUser: boolean;
-    message: string;
-  };
+  const params = useLocalSearchParams<{
+    fullName: string;
+    image: string;
+    id: string;
+  }>();
+
+  const { fullName, id, image } = params;
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
-  const chatSafeArea = useSafeAreaInsets().top;
 
-  // Create a ref for the FlatList
-  const chatListRef = useRef<FlatList | null>(null);
+  const [chatMessage, setChatMessages] = useState<{
+    id: string;
+    subject: string;
+    content: string;
+  }>({
+    content: "",
+    id: "",
+    subject: "",
+  });
 
-  const [chatMessages, setChatMessages] = useState<chatType[]>([
-    {
-      id: 1,
-      isUser: false,
-      message: "Hello, i'm Ziya, what are we fixing today!",
-    },
-  ]);
-
-  const [userInput, setUserInput] = useState("");
-  const [count, setCount] = useState(1);
-
-  const handleSendMessage = () => {
-    setCount(count + 1);
-    setChatMessages((prev) => [
-      ...prev,
-      {
-        id: count,
-        isUser: true,
-        message: userInput,
-      },
-    ]);
-    setUserInput("");
-  };
+  useEffect(() => {
+    setLoading(true);
+    AxiosInstance.get(`/messages/open-message/${id}`)
+      .then(async (res) => {
+        const result = res.data.data;
+        setChatMessages({
+          id: result._id,
+          content: result.content,
+          subject: result.subject,
+        });
+        console.log(result);
+      })
+      .catch((err) => {
+        console.log(err.response);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -74,37 +82,23 @@ const ChatScreen = () => {
             <BackIcon />
           </TouchableOpacity>
           <View style={styles.user}>
-            <Image
-              source={require("../assets/daniel.png")}
-              style={styles.img}
-            />
-            <Text style={styles.userName}>Daniel Bemsen</Text>
+            <Image src={image} style={styles.img} />
+            <Text style={styles.userName}>{fullName}</Text>
           </View>
         </View>
-        <FlatList
-          ref={(ref) => (chatListRef.current = ref)}
-          onContentSizeChange={() =>
-            chatListRef.current?.scrollToEnd({ animated: true })
-          }
-          style={[styles.chatSection]}
-          data={chatMessages}
-          keyExtractor={(item: any) => item.id.toString()}
-          renderItem={({ item }) => (
-            <ChatBubble isUser={item.isUser} message={item.message} />
-          )}
-        />
-        <View style={styles.chatActions}>
-          <TextInput
-            style={styles.input}
-            placeholder="Type something..."
-            placeholderTextColor={colors.white}
-            value={userInput}
-            onChangeText={setUserInput}
-          />
-          <TouchableOpacity style={styles.send} onPress={handleSendMessage}>
-            <SendIcon />
-          </TouchableOpacity>
-        </View>
+        {loading ? (
+          <View style={styles.loader}>
+            <ActivityIndicator color={colors.white} size="large" />
+          </View>
+        ) : (
+          <View style={[styles.chatSection]}>
+            <ChatBubble
+              isUser={false}
+              content={chatMessage.content}
+              subject={chatMessage.subject}
+            />
+          </View>
+        )}
 
         <StatusBar backgroundColor={colors.green300} barStyle="light-content" />
       </SafeAreaView>
@@ -213,6 +207,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 15,
+  },
+
+  loader: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

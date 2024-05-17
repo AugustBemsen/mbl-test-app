@@ -1,44 +1,47 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import colors from "../lib/configs/colors";
+import Size from "../lib/hooks/useResponsiveSize";
+import fonts from "../lib/configs/fonts";
 
 interface ChatBubbleProps {
-  message: string;
+  subject: string;
+  content: string;
   isUser?: boolean;
 }
 
-const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isUser }) => {
+const ChatBubble: React.FC<ChatBubbleProps> = ({
+  subject,
+  isUser,
+  content,
+}) => {
   return (
-    <View
-      style={[styles.bubble, isUser ? styles.userBubble : styles.botBubble]}
-    >
-      <Text style={styles.message}>{message}</Text>
+    <View style={styles.bubble}>
+      <Text style={styles.subject}>{subject}</Text>
+      <Text style={styles.content}>{content}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   bubble: {
-    maxWidth: "65%",
-    padding: 10,
-    borderRadius: 10,
+    // maxWidth: "65%",
+    padding: Size.calcAverage(20),
+    borderRadius: Size.calcAverage(12),
     marginVertical: 7,
-  },
-
-  userBubble: {
-    alignSelf: "flex-end",
-    backgroundColor: colors.green200,
-  },
-
-  botBubble: {
-    alignSelf: "flex-start",
     backgroundColor: colors.green300,
   },
 
-  message: {
-    fontSize: 16,
+  subject: {
+    fontSize: Size.calcAverage(20),
     color: colors.white,
-    fontFamily: "Poppins_500Medium",
+    fontFamily: fonts.font700,
+  },
+
+  content: {
+    fontSize: Size.calcAverage(16),
+    color: colors.white200,
+    fontFamily: fonts.font400,
   },
 });
 
