@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
 import Arrows from "../assets/svgs/arrow";
@@ -13,21 +14,71 @@ import colors from "../lib/configs/colors";
 import BottomArrow from "../assets/svgs/bottomArrow";
 import Size from "../lib/hooks/useResponsiveSize";
 import routes from "../lib/configs/routes";
+import AxiosInstance from "../lib/configs/axios";
+import { IUser } from "../lib/configs/types";
+import { setLocalData } from "../lib/hooks/localStorage";
 
 const WelcomeScreen = () => {
   const router = useRouter();
+
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<IUser>({
+    messagesCount: 0,
+    unReadCount: 0,
+    user: {
+      first_name: "",
+      id: "",
+      image: "",
+      last_name: "",
+    },
+  });
+
+  useEffect(() => {
+    setLoading(true);
+    AxiosInstance.get("/users/current-user")
+      .then(async (res) => {
+        setData(res.data.data);
+        await setLocalData("userData", JSON.stringify(res.data.data));
+      })
+      .catch((err) => {
+        console.log(err.response);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <View style={styles.container}>
       <Arrows style={styles.arrow} />
-      <Daniel />
-      <Text style={styles.title}>Hello, Daniel</Text>
-      <Text style={styles.subtitle}>You have 3 unread messages out of 10</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push(routes.MESSAGES_SCREEN)}
-      >
-        <Text style={styles.buttonText}>View Messages</Text>
-      </TouchableOpacity>
+      {loading ? (
+        <ActivityIndicator color={colors.white} size="large" />
+      ) : (
+        <>
+          <Daniel />
+          <Text style={styles.title}>Hello, {data.user?.first_name}</Text>
+          <Text style={styles.subtitle}>
+            You have {data.unReadCount} unread messages out of{" "}
+            {data.messagesCount}
+          </Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              router.push({
+                pathname: routes.MESSAGES_SCREEN,
+                params: {
+                  fullName: `${data.user.first_name} ${data.user.last_name}`,
+                  image: data.user.image,
+                  id: data.user.id,
+                  unreadCount: data.unReadCount,
+                },
+              })
+            }
+          >
+            <Text style={styles.buttonText}>View Messages</Text>
+          </TouchableOpacity>
+        </>
+      )}
       <BottomArrow style={styles.arrow2} />
       <StatusBar barStyle="light-content" />
     </View>

@@ -7,43 +7,49 @@ import truncateString from "../lib/snippets/truncate";
 import Size from "../lib/hooks/useResponsiveSize";
 import fonts from "../lib/configs/fonts";
 import routes from "../lib/configs/routes";
+import { IMessage } from "../lib/configs/types";
+import { formatDate } from "../lib/snippets/formatDate";
 
-interface MessageListProps {
-  name: string;
-  unreadCount: number;
-  message: string;
-  time: string;
-}
-
-const MessageList: React.FC<MessageListProps> = ({
-  message,
-  name,
-  unreadCount,
-  time,
+const MessageList: React.FC<IMessage> = ({
+  subject,
+  isRead,
+  content,
+  _id,
+  sender,
+  updated_at,
 }) => {
   const router = useRouter();
 
   return (
     <TouchableOpacity
       style={styles.message}
-      onPress={() => router.push(routes.CHAT_SCREEN)}
+      onPress={() =>
+        router.push({
+          pathname: routes.CHAT_SCREEN,
+          params: {
+            fullName: `${sender.first_name} ${sender.last_name}`,
+            image: sender.image,
+            id: _id,
+          },
+        })
+      }
     >
-      <Image source={require("../assets/daniel.png")} style={styles.chatImg} />
+      <Image src={sender.image} style={styles.chatImg} />
       <View style={styles.chatWrap}>
         <View style={styles.chatFlex}>
-          <Text style={styles.userName}>{name}</Text>
-          <Text style={styles.time}>{time}</Text>
+          <Text style={styles.userName}>{subject}</Text>
+          <Text style={styles.time}>{formatDate(updated_at)}</Text>
         </View>
         <View style={[styles.chatFlex, { marginTop: 3 }]}>
           <Text style={styles.text}>
             {truncateString({
-              str: message,
+              str: content,
               maxLength: 25,
             })}
           </Text>
-          {unreadCount > 0 && (
+          {!isRead && (
             <View style={styles.counts}>
-              <Text style={styles.count}>{unreadCount}</Text>
+              <Text style={styles.count}>{1}</Text>
             </View>
           )}
         </View>
@@ -72,6 +78,7 @@ const styles = StyleSheet.create({
   chatImg: {
     width: Size.calcAverage(50),
     height: Size.calcAverage(50),
+    borderRadius: Size.calcAverage(50),
   },
 
   chatWrap: {

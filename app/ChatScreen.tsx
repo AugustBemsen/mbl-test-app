@@ -48,8 +48,20 @@ const ChatScreen = () => {
   ]);
 
   const [userInput, setUserInput] = useState("");
+  const [count, setCount] = useState(1);
 
-  const handleSendMessage = () => {};
+  const handleSendMessage = () => {
+    setCount(count + 1);
+    setChatMessages((prev) => [
+      ...prev,
+      {
+        id: count,
+        isUser: true,
+        message: userInput,
+      },
+    ]);
+    setUserInput("");
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -94,7 +106,7 @@ const ChatScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <StatusBar backgroundColor={colors.green300} />
+        <StatusBar backgroundColor={colors.green300} barStyle="light-content" />
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "mbl-test",
+    "name": "mbl test",
     "slug": "mbl-test",
-    "scheme": "com.danireptor.mbl-test",
+    "scheme": "com.danireptor.mbltest",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,11 +19,20 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.danireptor.mbltest"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-font", "expo-router"]
+    "plugins": ["expo-font", "expo-router"],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "51581616-d0dc-4f5f-ac8a-611c008c7345"
+      }
+    }
   }
 }
