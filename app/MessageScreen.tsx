@@ -8,6 +8,7 @@ import {
   Image,
   FlatList,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
@@ -21,11 +22,14 @@ import MessageList from "../components/messageList";
 import { getLocalData } from "../lib/hooks/localStorage";
 import AxiosInstance from "../lib/configs/axios";
 import { IMessage } from "../lib/configs/types";
+import useIsDesktop from "../lib/hooks/useIsDesktop";
 
 const getUserData = async () =>
   JSON.parse((await getLocalData("userData")) as string);
 
 const MessageScreen = () => {
+  const isDesktop = useIsDesktop();
+
   const params = useLocalSearchParams<{
     fullName: string;
     image: string;
@@ -62,7 +66,7 @@ const MessageScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.nav}>
+      <View style={isDesktop ? [styles.nav, styles.desktopNav] : styles.nav}>
         <View style={styles.user}>
           <Image source={{ uri: image }} style={styles.img} />
           <Text style={styles.userName}>{fullName}</Text>
@@ -80,7 +84,11 @@ const MessageScreen = () => {
         </View>
       ) : (
         <FlatList
-          style={styles.messages}
+          style={
+            isDesktop
+              ? [styles.messages, styles.desktopMessages]
+              : styles.messages
+          }
           data={messages}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => <MessageList {...item} />}
@@ -97,6 +105,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.black,
     position: "relative",
+  },
+
+  desktopNav: {
+    paddingTop: Size.calcHeight(20),
+    paddingHorizontal: Size.calcWidth(70),
   },
 
   nav: {
@@ -130,6 +143,10 @@ const styles = StyleSheet.create({
 
   messages: {
     paddingHorizontal: Size.calcWidth(20),
+  },
+
+  desktopMessages: {
+    paddingHorizontal: Size.calcWidth(70),
   },
 
   loader: {

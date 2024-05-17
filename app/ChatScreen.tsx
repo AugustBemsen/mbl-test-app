@@ -28,8 +28,11 @@ import Size from "../lib/hooks/useResponsiveSize";
 import BackIcon from "../assets/svgs/backIcon";
 import AxiosInstance from "../lib/configs/axios";
 import { IMessage } from "../lib/configs/types";
+import useIsDesktop from "../lib/hooks/useIsDesktop";
 
 const ChatScreen = () => {
+  const isDesktop = useIsDesktop();
+
   const params = useLocalSearchParams<{
     fullName: string;
     image: string;
@@ -61,7 +64,6 @@ const ChatScreen = () => {
           content: result.content,
           subject: result.subject,
         });
-        console.log(result);
       })
       .catch((err) => {
         console.log(err.response);
@@ -75,9 +77,15 @@ const ChatScreen = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView style={styles.container}>
         <Arrows style={styles.arrow} />
-        <CenterArrow style={styles.centerArrow} />
+        <CenterArrow
+          style={
+            isDesktop
+              ? [styles.centerArrow, styles.desktopCenterArrow]
+              : styles.centerArrow
+          }
+        />
         <BottomArrow style={styles.bottomArrow} />
-        <View style={styles.nav}>
+        <View style={isDesktop ? [styles.nav, styles.desktopNav] : styles.nav}>
           <TouchableOpacity onPress={() => router.back()}>
             <BackIcon />
           </TouchableOpacity>
@@ -91,7 +99,13 @@ const ChatScreen = () => {
             <ActivityIndicator color={colors.white} size="large" />
           </View>
         ) : (
-          <View style={[styles.chatSection]}>
+          <View
+            style={
+              isDesktop
+                ? [styles.chatSection, styles.desktopChatSection]
+                : styles.chatSection
+            }
+          >
             <ChatBubble
               isUser={false}
               content={chatMessage.content}
@@ -120,6 +134,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.green300,
     paddingHorizontal: Size.calcWidth(20),
     paddingBottom: Size.calcHeight(15),
+  },
+
+  desktopNav: {
+    paddingTop: Size.calcHeight(20),
+    paddingHorizontal: Size.calcWidth(70),
   },
 
   user: {
@@ -160,6 +179,10 @@ const styles = StyleSheet.create({
     zIndex: -2,
   },
 
+  desktopCenterArrow: {
+    left: "85%",
+  },
+
   bottomArrow: {
     position: "absolute",
     bottom: -5,
@@ -171,6 +194,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: Size.calcHeight(30),
     marginBottom: Size.calcHeight(80),
     marginTop: Size.calcHeight(15),
+  },
+
+  desktopChatSection: {
+    paddingHorizontal: Size.calcWidth(70),
   },
 
   chatActions: {

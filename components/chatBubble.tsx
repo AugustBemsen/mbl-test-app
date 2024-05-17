@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import colors from "../lib/configs/colors";
 import Size from "../lib/hooks/useResponsiveSize";
 import fonts from "../lib/configs/fonts";
+import useIsDesktop from "../lib/hooks/useIsDesktop";
 
 interface ChatBubbleProps {
   subject: string;
@@ -15,10 +16,17 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   isUser,
   content,
 }) => {
+  const isDesktop = useIsDesktop();
   return (
     <View style={styles.bubble}>
       <Text style={styles.subject}>{subject}</Text>
-      <Text style={styles.content}>{content}</Text>
+      <Text
+        style={
+          isDesktop ? [styles.content, styles.desktopContent] : styles.content
+        }
+      >
+        {content}
+      </Text>
     </View>
   );
 };
@@ -42,6 +50,12 @@ const styles = StyleSheet.create({
     fontSize: Size.calcAverage(16),
     color: colors.white200,
     fontFamily: fonts.font400,
+  },
+
+  desktopContent: {
+    marginTop: Size.calcHeight(10),
+    color: colors.white,
+    opacity: 0.75,
   },
 });
 
