@@ -55,7 +55,7 @@ const WelcomeScreen = () => {
         <ActivityIndicator color={colors.white} size="large" />
       ) : (
         <>
-          <Image style={styles.person} src={data.user.image} />
+          <Image style={styles.person} source={{ uri: data.user.image }} />
           <Text style={styles.title}>Hello, {data.user?.first_name}</Text>
           <Text style={styles.subtitle}>
             You have {data.unReadCount} unread messages out of{" "}

@@ -34,7 +34,7 @@ const MessageList: React.FC<IMessage> = ({
         })
       }
     >
-      <Image src={sender.image} style={styles.chatImg} />
+      <Image source={{ uri: sender.image }} style={styles.chatImg} />
       <View style={styles.chatWrap}>
         <View style={styles.chatFlex}>
           <Text style={styles.userName}>{subject}</Text>

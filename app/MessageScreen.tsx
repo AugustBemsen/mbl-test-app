@@ -64,7 +64,7 @@ const MessageScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.nav}>
         <View style={styles.user}>
-          <Image src={image} style={styles.img} />
+          <Image source={{ uri: image }} style={styles.img} />
           <Text style={styles.userName}>{fullName}</Text>
         </View>
         <TouchableOpacity>

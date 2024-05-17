@@ -82,7 +82,7 @@ const ChatScreen = () => {
             <BackIcon />
           </TouchableOpacity>
           <View style={styles.user}>
-            <Image src={image} style={styles.img} />
+            <Image source={{ uri: image }} style={styles.img} />
             <Text style={styles.userName}>{fullName}</Text>
           </View>
         </View>
