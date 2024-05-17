@@ -29,15 +29,18 @@ import BackIcon from "../assets/svgs/backIcon";
 import AxiosInstance from "../lib/configs/axios";
 import { IMessage } from "../lib/configs/types";
 import useIsDesktop from "../lib/hooks/useIsDesktop";
+import useIsMobileBrowser from "../lib/hooks/isMobileBrowser";
 
 const ChatScreen = () => {
-  const isDesktop = useIsDesktop();
-
   const params = useLocalSearchParams<{
     fullName: string;
     image: string;
     id: string;
   }>();
+
+  // media queries
+  const isDesktop = useIsDesktop();
+  const isMobileBrowser = useIsMobileBrowser();
 
   const { fullName, id, image } = params;
   const [loading, setLoading] = useState(true);
@@ -85,7 +88,13 @@ const ChatScreen = () => {
           }
         />
         <BottomArrow style={styles.bottomArrow} />
-        <View style={isDesktop ? [styles.nav, styles.desktopNav] : styles.nav}>
+        <View
+          style={
+            isDesktop || isMobileBrowser
+              ? [styles.nav, styles.desktopNav]
+              : styles.nav
+          }
+        >
           <TouchableOpacity onPress={() => router.back()}>
             <BackIcon />
           </TouchableOpacity>

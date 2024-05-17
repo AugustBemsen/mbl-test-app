@@ -23,12 +23,14 @@ import { getLocalData } from "../lib/hooks/localStorage";
 import AxiosInstance from "../lib/configs/axios";
 import { IMessage } from "../lib/configs/types";
 import useIsDesktop from "../lib/hooks/useIsDesktop";
+import useIsMobileBrowser from "../lib/hooks/isMobileBrowser";
 
 const getUserData = async () =>
   JSON.parse((await getLocalData("userData")) as string);
 
 const MessageScreen = () => {
   const isDesktop = useIsDesktop();
+  const isMobileBrowser = useIsMobileBrowser();
 
   const params = useLocalSearchParams<{
     fullName: string;
@@ -66,7 +68,13 @@ const MessageScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={isDesktop ? [styles.nav, styles.desktopNav] : styles.nav}>
+      <View
+        style={
+          isDesktop || isMobileBrowser
+            ? [styles.nav, styles.desktopNav]
+            : styles.nav
+        }
+      >
         <View style={styles.user}>
           <Image source={{ uri: image }} style={styles.img} />
           <Text style={styles.userName}>{fullName}</Text>
