@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   StatusBar,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { useRouter } from "expo-router";
 import Arrows from "../assets/svgs/arrow";
-import Daniel from "../assets/svgs/daniel";
 import colors from "../lib/configs/colors";
 import BottomArrow from "../assets/svgs/bottomArrow";
 import Size from "../lib/hooks/useResponsiveSize";
@@ -55,7 +55,7 @@ const WelcomeScreen = () => {
         <ActivityIndicator color={colors.white} size="large" />
       ) : (
         <>
-          <Daniel />
+          <Image style={styles.person} src={data.user.image} />
           <Text style={styles.title}>Hello, {data.user?.first_name}</Text>
           <Text style={styles.subtitle}>
             You have {data.unReadCount} unread messages out of{" "}
@@ -104,6 +104,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: -10,
     left: -10,
+  },
+
+  person: {
+    width: Size.calcAverage(150),
+    height: Size.calcAverage(150),
+    borderRadius: Size.calcAverage(150),
+    borderWidth: 2,
+    borderColor: colors.green300,
   },
 
   title: {
