@@ -90,8 +90,10 @@ const ChatScreen = () => {
         <BottomArrow style={styles.bottomArrow} />
         <View
           style={
-            isDesktop || isMobileBrowser
+            isDesktop
               ? [styles.nav, styles.desktopNav]
+              : isMobileBrowser
+              ? [styles.nav, styles.mobileNav]
               : styles.nav
           }
         >
@@ -148,6 +150,10 @@ const styles = StyleSheet.create({
   desktopNav: {
     paddingTop: Size.calcHeight(20),
     paddingHorizontal: Size.calcWidth(70),
+  },
+
+  mobileNav: {
+    paddingTop: Size.calcHeight(20),
   },
 
   user: {
